@@ -1,12 +1,14 @@
+#include <BleKeyboard.h>
+#include <BleMouse.h>
 #include <Wire.h>
 #include <MPU6050.h>
-#include <ESP32_BLE_Mouse.h>
 
+// #include <ESP32_BLE_Mouse.h>
 // Replace with your own ESP32 Bluetooth address
-#define BLE_MOUSE_ADDRESS "Mouse Address"
+// #define BLE_MOUSE_ADDRESS "Mouse Address"
 
 MPU6050 mpu;
-BLEMouse bleMouse;
+BleMouse bleMouse;
 
 void setup() {
   Serial.begin(115200);
@@ -14,7 +16,7 @@ void setup() {
   mpu.initialize();
 
   // Initialize Bluetooth
-  bleMouse.begin(BLE_MOUSE_ADDRESS);
+  bleMouse.begin();
 
   Serial.println("Bluetooth Mouse Initialized");
 }
@@ -22,6 +24,8 @@ void setup() {
 void loop() {
   // Read accelerometer data from MPU6050
   int16_t ax, ay, az;
+  if(bleMouse.isConnected()) {
+  Serial.println("Scroll up");
   mpu.getAcceleration(&ax, &ay, &az);
 
   // Adjust the sensitivity based on your preference
@@ -33,6 +37,7 @@ void loop() {
 
   // Send mouse movements over Bluetooth
   bleMouse.move(dx, dy, 0);
+  }
 
   delay(50); // Adjust the delay based on your preference
 }
